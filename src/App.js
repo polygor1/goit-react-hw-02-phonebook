@@ -19,15 +19,22 @@ class App extends Component {
   };
 
   formSubmitHandler = data => {
-    this.state.contacts.map(item => item.name === data.name);
-    // вставить проверку на совпадение с БД
-    data.id = nanoid();
-
-    const contact = { ...data };
-
-    this.setState(({ contacts }) => ({
-      contacts: [contact, ...contacts],
-    }));
+    const nextName = data.name.toLowerCase();
+    // проверка на совпадение с БД
+    if (
+      this.state.contacts.filter(item => item.name.toLowerCase() === nextName)
+        .length === 0
+    ) {
+      // заносим в БД новенького
+      data.id = nanoid();
+      const contact = { ...data };
+      this.setState(({ contacts }) => ({
+        contacts: [contact, ...contacts],
+      }));
+    } else {
+      // или ругаемся
+      alert(data.name + ' is already in contacts');
+    }
   };
 
   changeFilter = event => {
@@ -36,7 +43,7 @@ class App extends Component {
   };
 
   deleteContact = targetId => {
-    // создаем новый массив БД без элемента с выбранным ID
+    // создаем новый массив БД без элемента с выбранным ID (типа удаляем выбранный ID)
     this.setState(prevState => ({
       contacts: prevState.contacts.filter(contact => contact.id !== targetId),
     }));
@@ -45,7 +52,7 @@ class App extends Component {
   getVisibleContact = () => {
     const { filter, contacts } = this.state;
     const normalizedFilter = filter.toLowerCase();
-    // ищем контакты по имени из this.state.filter
+    // ищем контакты в БД по имени из this.state.filter
     return contacts.filter(contact =>
       contact.name.toLowerCase().includes(normalizedFilter),
     );
@@ -59,9 +66,8 @@ class App extends Component {
       <div className="App">
         <h1>goit-react-hw-02-phonebook</h1>
         <ContactForm onSubmit={this.formSubmitHandler} />
-        <h2> Contacts </h2>
+        <h2 className="title"> Contacts </h2>
         <Filter value={filter} onChange={this.changeFilter} />
-
         <ContactList
           contacts={visbleContact}
           onDeleteContact={this.deleteContact}

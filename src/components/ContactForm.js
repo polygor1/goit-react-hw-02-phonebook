@@ -14,17 +14,20 @@ export class ContactForm extends Component {
   inputId = nanoid();
 
   handleChange = event => {
+    // отображалка для поля ввода
     const { name, value } = event.currentTarget;
     this.setState({ [name]: value });
   };
 
   handleSubmit = event => {
+    // отсылалка данных из полей формы
     event.preventDefault();
     this.props.onSubmit({ ...this.state });
     this.reset();
   };
 
   reset = () => {
+    // опустошалка полей ввода
     this.setState({ ...INITIAL_STATE });
   };
 
