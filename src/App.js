@@ -19,7 +19,10 @@ class App extends Component {
   };
 
   formSubmitHandler = data => {
+    this.state.contacts.map(item => item.name === data.name);
+    // вставить проверку на совпадение с БД
     data.id = nanoid();
+
     const contact = { ...data };
 
     this.setState(({ contacts }) => ({
@@ -28,21 +31,30 @@ class App extends Component {
   };
 
   changeFilter = event => {
+    // вносим строку поиска в this.state.filter
     this.setState({ filter: event.currentTarget.value });
+  };
+
+  deleteContact = targetId => {
+    // создаем новый массив БД без элемента с выбранным ID
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== targetId),
+    }));
   };
 
   getVisibleContact = () => {
     const { filter, contacts } = this.state;
     const normalizedFilter = filter.toLowerCase();
-
+    // ищем контакты по имени из this.state.filter
     return contacts.filter(contact =>
       contact.name.toLowerCase().includes(normalizedFilter),
     );
   };
 
   render() {
-    const { contacts, filter } = this.state;
+    const { filter } = this.state;
     const visbleContact = this.getVisibleContact();
+
     return (
       <div className="App">
         <h1>goit-react-hw-02-phonebook</h1>
@@ -50,7 +62,10 @@ class App extends Component {
         <h2> Contacts </h2>
         <Filter value={filter} onChange={this.changeFilter} />
 
-        <ContactList props={visbleContact} />
+        <ContactList
+          contacts={visbleContact}
+          onDeleteContact={this.deleteContact}
+        />
       </div>
     );
   }

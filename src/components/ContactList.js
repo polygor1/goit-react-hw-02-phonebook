@@ -1,18 +1,22 @@
-// import styles from './ContactList.module.css';
 import React, { Component } from 'react';
+// import styles from './ContactList.module.css';
 
 export class ContactList extends Component {
   render() {
     return (
-      <div>
-        <ul>
-          {this.props.props.map(item => (
-            <li key={item.id}>
-              {item.name}: {item.number}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <ul>
+        {this.props.contacts.map(item => (
+          <li key={item.id}>
+            {item.name}: {item.number}
+            <button
+              type="button"
+              onClick={() => this.props.onDeleteContact(item.id)}
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
     );
   }
 }
